@@ -28,6 +28,8 @@ class IP(Structure):
             17:"UDP"
         }
 
+        print(self.protocol_num, self.src)
+
         self.protocol_src = inet_ntoa(struct.pack('<L',self.src))
         self.protocol_dst = inet_ntoa(struct.pack('<L',self.dst))
 
