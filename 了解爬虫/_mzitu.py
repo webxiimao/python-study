@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import requests
 
 
-headers = {'User-Agent':"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1",'Referer':'http://www.mzitu.com/101553'}##浏览器请求头（大部分网站没有这个请求头会报错、请务必加上哦）
+headers = {'User-Agent':"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1",'Referer':'http://www.mzitu.com/101553'}
 all_url = "http://www.mzitu.com/all"
 start_html =  requests.get(all_url,headers=headers)
 
@@ -16,8 +16,9 @@ all_a = Soup.find('div',class_='all').find_all('a')
 for a in all_a:
     txt = a.get_text()
     path = str(txt).strip()
-    os.makedirs(os.path.join('D:\mizitu',path))
-    os.chdir('D:\mizitu\\'+path)
+    os.makedirs(os.path.join('D:\mizitu1',path))
+    # os.chdir('D:\mizitu\\'+path)
+    os.chdir(os.path.join('D:\mizitu1',path))
     href = a['href']
     html = requests.get(href,headers=headers)
     html_soup = BeautifulSoup(html.text, 'lxml')
