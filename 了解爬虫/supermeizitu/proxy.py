@@ -10,7 +10,6 @@ def download_proxy():
     html_soup = BeautifulSoup(html.text, 'lxml')
 
     all_tr = html_soup.find_all('table')[2].find_all('tr')
-    print(all_tr)
     for tr in all_tr:
         ip_port = tr.find_all('td')[0].get_text() + ":" + tr.find_all('td')[1].get_text()
         print(ip_port.strip())

@@ -1,12 +1,13 @@
-import requests
+# import requests
 from bs4 import BeautifulSoup
 import os
+from supermeizitu.download import request
 
 
 class Meizitu(object):
     def __init__(self):
         self.start_url = 'http://www.mzitu.com/all'
-        self.headers = {'User-Agent':"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1",'Referer':'http://www.mzitu.com/101553'}
+        # self.headers = {'User-Agent':"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1",'Referer':'http://www.mzitu.com/101553'}
 
 
     def start(self):
@@ -47,12 +48,12 @@ class Meizitu(object):
 
 
     def request_img(self,url):
-        html = requests.get(url, headers=self.headers)
+        html = request.get(url, 3)
         return html
 
 
     def request(self,url):
-        html = requests.get(url,headers=self.headers)
+        html = request.get(url, 3)
         soup = BeautifulSoup(html.text, 'lxml')
         return soup
 
@@ -60,14 +61,14 @@ class Meizitu(object):
     def makedir(self, name):
         path = str(name).strip()#去除空格
         # print(os.path.exists(os.path.join('D:\meizitu',path)))
-        if not os.path.exists(os.path.join('D:\meizitu',path)):
+        if not os.path.exists(os.path.join('D:\meizitu2',path)):
             print(u"新建文件夹----"+ path)
-            os.makedirs(os.path.join('D:\meizitu',path))
-            os.chdir(os.path.join('D:\meizitu',path))
+            os.makedirs(os.path.join('D:\meizitu2',path))
+            os.chdir(os.path.join('D:\meizitu2',path))
             return True
         else:
             print(u'名字叫做'+ path + u'的文件夹已经存在了！')
-            os.chdir(os.path.join('D:\meizitu', path))
+            os.chdir(os.path.join('D:\meizitu2', path))
             return False
 
 

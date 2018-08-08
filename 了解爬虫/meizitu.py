@@ -60,14 +60,14 @@ class Meizitu(object):
     def makedir(self, name):
         path = str(name).strip()#去除空格
         # print(os.path.exists(os.path.join('D:\meizitu',path)))
-        if not os.path.exists(os.path.join('D:\meizitu',path)):
+        if not os.path.exists(os.path.join('D:\meizitu1',path)):
             print(u"新建文件夹----"+ path)
-            os.makedirs(os.path.join('D:\meizitu',path))
-            os.chdir(os.path.join('D:\meizitu',path))
+            os.makedirs(os.path.join('D:\meizitu1',path))
+            os.chdir(os.path.join('D:\meizitu1',path))
             return True
         else:
             print(u'名字叫做'+ path + u'的文件夹已经存在了！')
-            os.chdir(os.path.join('D:\meizitu', path))
+            os.chdir(os.path.join('D:\meizitu1', path))
             return False
 
 

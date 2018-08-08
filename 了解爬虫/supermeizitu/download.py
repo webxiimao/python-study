@@ -1,6 +1,8 @@
 import re
 import requests
 import random
+from bs4 import BeautifulSoup
+import time
 
 
 class Download(object):
@@ -14,10 +16,9 @@ class Download(object):
         html = requests.get(url, headers=headers)
         html_soup = BeautifulSoup(html.text, 'lxml')
         all_tr = html_soup.find_all('table')[2].find_all('tr')
-        print(all_tr)
+        iplist = []
         for tr in all_tr:
             ip_port = tr.find_all('td')[0].get_text() + ":" + tr.find_all('td')[1].get_text()
-            # print(ip_port)
             iplist.append(ip_port.strip())
         self.iplist = iplist
 
@@ -42,8 +43,39 @@ class Download(object):
             "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 (KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24"
         ]
 
-    def get(self, url, proxy=None):
+    def get(self, url, timeout, proxy=None, num_tries = 6):
         UA = random.choice(self.user_agent_list)
         headers = {'User-Agent': UA}
-        response = requests.get(url,headers=headers)
-        return response
+        if proxy == None:
+            try:
+                return requests.get(url, headers=headers, timeout=timeout)
+            except:
+                if num_tries > 0:
+                    time.sleep(10)
+                    print( '获取网页失败,10s后将获取倒数第' , num_tries  , '次尝试' )
+                    return self.get(url, timeout, num_tries=num_tries-1)
+                else:
+                    print('多次失败开始使用代理')
+                    IP = str(random.choice(self.iplist).strip())
+                    proxy = {'http':IP}
+                    return self.get(url, timeout, proxy=proxy)
+        else:
+            try:
+                IP = str(random.choice(self.iplist).strip())
+                proxy = {'http':IP}
+                return requests.get(url, headers=headers, proxies=proxy, timeout=timeout)
+            except:
+                if num_tries > 0:
+                    time.sleep(10)
+                    IP = str(random.choice(self.iplist).strip())
+                    proxy = {'http':IP}
+                    print('正在更换代理倒数第', num_tries, '次尝试')
+                    return self.get(url, timeout, proxy=proxy)
+                else:
+                    print('代理失效,取消代理')
+                    return self.get(url, 3)
+
+
+
+request = Download()
+
