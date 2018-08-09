@@ -43,17 +43,19 @@ class Download(object):
             "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 (KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24"
         ]
 
-    def get(self, url, timeout, proxy=None, num_tries = 6):
+    def get(self, url, timeout, proxy=None, num_tries=6):
         UA = random.choice(self.user_agent_list)
-        headers = {'User-Agent': UA}
+        headers = {'User-Agent': UA ,'Referer':'http://www.mzitu.com/101553'}
         if proxy == None:
             try:
                 return requests.get(url, headers=headers, timeout=timeout)
             except:
                 if num_tries > 0:
+                    print('num_tries:%s' % num_tries)
+                    num = num_tries - 1
                     time.sleep(10)
                     print( '获取网页失败,10s后将获取倒数第' , num_tries  , '次尝试' )
-                    return self.get(url, timeout, num_tries=num_tries-1)
+                    return self.get(url, timeout, num_tries=num)
                 else:
                     print('多次失败开始使用代理')
                     IP = str(random.choice(self.iplist).strip())
@@ -66,11 +68,12 @@ class Download(object):
                 return requests.get(url, headers=headers, proxies=proxy, timeout=timeout)
             except:
                 if num_tries > 0:
+
                     time.sleep(10)
                     IP = str(random.choice(self.iplist).strip())
                     proxy = {'http':IP}
                     print('正在更换代理倒数第', num_tries, '次尝试')
-                    return self.get(url, timeout, proxy=proxy)
+                    return self.get(url, timeout, proxy=proxy, num_tries = num_tries-1)
                 else:
                     print('代理失效,取消代理')
                     return self.get(url, 3)
