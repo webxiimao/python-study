@@ -83,7 +83,7 @@ class Meizitu(object):
 
 
     def makedir(self, name):
-        path = str(name).strip().replace(':','_') #去除空格
+        path = str(name).strip().replace(':','_').replace('?','_') #去除空格
         # print(os.path.exists(os.path.join('D:\meizitu',path)))
         if not os.path.exists(os.path.join('D:\meizitu2',path)):
             print(u"新建文件夹----"+ path)
