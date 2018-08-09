@@ -1,9 +1,13 @@
 import requests
 from pymongo import MongoClient
 import random
+import time
 
 
 class network_status(object):
+    '''
+    对家庭网络断网次数和时间进行统计
+    '''
     def __init__(self):
         self.url = "https://www.baidu.com"
         self.user_agent_list = [
@@ -28,15 +32,66 @@ class network_status(object):
         ]
         client = MongoClient()
         db = client['network']
+
         self.net_collection = db['network_status']
+        self.count = 1
+        self.status = 200
+        self.begin_time = None
+        self.end_time = None
 
+    '''
+    启动服务
+    '''
     def start(self):
-        ua = random.choice(self.user_agent_list)
-        headers = {'User-Agent':ua}
-        response = requests.get(self.url, headers=headers)
-        print(response.status_code)
 
+        while True:
+            time.sleep(5)
+            ua = random.choice(self.user_agent_list)
+            headers = {'User-Agent': ua}
+            try:
+                response = requests.get(self.url, headers=headers)
+                if self.status == 500:
+                    self.end_time = time.time()
+                    cut_time = self.end_time - self.begin_time
+                    print('网络中断开始时间:',self.time_format(self.begin_time))
+                    print('网络中断结束时间:',self.time_format(self.end_time))
+                    print('网络连接恢复,中断时间为:',round(cut_time,2),'s')
+                    post = {
+                        'time':self.count ,
+                        'begin_time':self.time_format(self.begin_time),
+                        'end_time':self.time_format(self.end_time),
+                        'break_time':round(cut_time,2)
+                    }
+                    self.net_collection.save(post)
 
+                    self.reset_params()
+                else:
+                    print(response.status_code)
+            except:
+                if self.status is not 500:
+                    self.status = 500
+                    self.begin_time = time.time()
+                    print('网络连接中断第', self.count, '次')
+
+    def reset_params(self):
+        '''
+        复位指针数据
+        :return:
+        '''
+        self.end_time = None
+        self.begin_time = None
+        self.count += 1
+        self.status = 200
+
+    def time_format(self, times):
+        '''
+        日期格式化
+        :param times: 时间戳
+        :return: 标准时间格式
+        '''
+        now = int(times)
+        t = time.localtime(now)
+        return time.strftime("%Y-%m-%d %H:%M:%S", t)
 
 if __name__ == '__main__':
     net = network_status()
