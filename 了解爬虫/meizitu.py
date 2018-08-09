@@ -21,6 +21,9 @@ class Meizitu(object):
 
     def html(self,a):
         href = a['href']
+
+
+
         html_soup = self.request(href)
 
         if html_soup.find('div', class_='pagenavi') is None:
