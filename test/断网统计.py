@@ -1,5 +1,5 @@
 import requests
-from pymongo import MongoClient
+from pymongo import MongoClient, DESCENDING
 import random
 import time
 
@@ -34,7 +34,9 @@ class network_status(object):
         db = client['network']
 
         self.net_collection = db['network_status']
-        self.count = 1
+
+        results = self.net_collection.find().sort('time', DESCENDING).limit(1)
+        self.count = int([result['time'] for result in results][0]) + 1
         self.status = 200
         self.begin_time = None
         self.end_time = None
