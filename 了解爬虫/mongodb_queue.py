@@ -8,7 +8,7 @@ class MongoQueue(object):
     COMPLETE = 3  ##下载完成状态
 
 
-    def __init__(self, db, collection, timeout=300):
+    def __init__(self, db, collection, timeout=2000):
         self.client = MongoClient()
         self.Client = self.client[db]
         self.db = self.Client[collection]
@@ -34,7 +34,7 @@ class MongoQueue(object):
         '''
         try:
             self.db.insert(
-                {'_id':url, 'status':OUTSTANDING, 'title':title}
+                {'_id':url, 'status':self.OUTSTANDING, 'title':title}
             )
             print(url,'已插入队列')
         except errors.DuplicateKeyError as e:
@@ -59,6 +59,11 @@ class MongoQueue(object):
             self.repair()
             raise KeyError
 
+    def pop_title(self, url):
+        record = self.db.find_one({'_id': url})
+        return record['title']
+
+
     def peek(self):
         '''
         找到一个正在等待中的进程并返回它的url
@@ -81,6 +86,16 @@ class MongoQueue(object):
             {'_id':url},
             {'$set' : {'status' : self.COMPLETE}}
         )
+
+
+    def push_imgurl(self, title, url):
+        try:
+            self.db.insert({'_id': title, 'url': url})
+            print('图片地址插入成功')
+        except errors.DuplicateKeyError as e:
+            print('地址已经存在了')
+            pass
+
 
     def repair(self):
         record = self.db.find_and_modify(
