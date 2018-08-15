@@ -11,4 +11,17 @@ import scrapy
 class XiaoshuoItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    pass
+    name = scrapy.Field()
+    #小说姓名
+    author = scrapy.Field()
+    #作者
+    novelurl = scrapy.Field()
+    #小说地址
+    serialstatus = scrapy.Field()
+    #状态
+    serialnumber = scrapy.Field()
+    #连载字数
+    category = scrapy.Field()
+    #文章类别
+    name_id = scrapy.Field()
+    #小说编号
