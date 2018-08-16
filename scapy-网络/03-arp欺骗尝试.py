@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*
+
 from scapy.all import get_if_hwaddr,getmacbyip,Ether,ARP,sendp
 
 import sys
