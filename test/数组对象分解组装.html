@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+<script>
+    var list = [
+        {
+            a1:1,
+            a2:2,
+            a3:3,
+            a4:4
+        },
+        {
+            a1:1,
+            a2:2,
+            a3:3,
+            a4:4
+        },
+        {
+            a1:1,
+            a2:2,
+            a3:3,
+            a4:4
+        },
+        {
+            a1:1,
+            a2:2,
+            a3:3,
+            a4:4
+        },
+        {
+            a1:1,
+            a2:2,
+            a3:3,
+            a4:4
+        },
+    ];
+
+
+    function listping(list) {
+        let count = 0
+        let obj = {}
+        function inner(count,obj) {
+            if(count == list.length)return
+            for(let key in list[count]){
+                obj[key] = []
+                list.forEach(item => {
+                    obj[key].push(item[key])
+                })
+                count += 1
+                inner(count,obj)
+            }
+        }
+        inner(count,obj)
+        console.log(obj);
+
+    }
+
+
+    listping(list)
+</script>
